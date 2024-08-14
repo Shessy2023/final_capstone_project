@@ -1,8 +1,8 @@
 # Deploying a microservices-based architecture application
 
-# Name: Oluwasesan O. Oluwayemi
+## Name: Oluwasesan O. Oluwayemi
 
-# Altschool Student ID: ALT/SOE/023/2015
+## Altschool Student ID: ALT/SOE/023/2015
 
 ## Overview of the capstone project
 
