@@ -1,2 +1,12 @@
-*.terraform
+# Ignore all `.log` files
+*.log
 
+# Ignore a specific file
+secrets.yml
+
+# Ignore a specific directory
+/Users/shessy/Desktop/Capstone_project_azure2/terraform.tfstate
+
+
+# Ignore all files with a specific extension
+*.zip
