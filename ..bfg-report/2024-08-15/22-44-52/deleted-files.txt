@@ -1,0 +1,2 @@
+d4f8d4428b9fc6d726c0267e6b36bd3c0870a2f8 249727232 terraform-provider-azapi_v1.14.0
+977e969e73d8e152a02efa8031f99b5c31818614 276840752 terraform-provider-azurerm_v3.115.0_x5
