@@ -73,6 +73,11 @@ jobs:
         run: |
           az aks install-cli
 
+      - name: Set up Azure authentication
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: Configure Kubectl
         run: |
           az aks get-credentials --resource-group rg-dear-jawfish --name cluster-exact-osprey --admin --overwrite-existing
