@@ -5,10 +5,9 @@ on:
     branches:
       - main
     paths:
-      - 'sock-shop-app/k8s/**'
-      - 'sock-shop-app/monitoring/**'
-      - 'sock-shop-app/alerting/**'
-      - 'sock-shop-app/logging/**'
+      - terraform/**
+      - my-sock-shop-complete-demo.yaml/**
+  
 
   # workflow_dispatch:
   #   inputs:
@@ -18,91 +17,59 @@ on:
   #       default: 'default_value'
 
 jobs:
-  deploy:
+  terraform:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Install Azure CLI
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Azure CLI
         run: |
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-
-      - name: Set up Azure authentication
+      - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
         with:
-          version: 'latest'
-          
-      - name: Set up Kubernetes
+          terraform_version: 1.5.0
+      - name: Terraform Init
+        run: terraform init
+      - name: Terraform Plan
+        run: terraform plan
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        env:
+          ARM_CLIENT_ID: '${{ secrets.AZURE_CLIENT_ID }}'
+          ARM_CLIENT_SECRET: '${{ secrets.AZURE_CLIENT_SECRET }}'
+          ARM_SUBSCRIPTION_ID: '${{ secrets.AZURE_SUBSCRIPTION_ID }}'
+          ARM_TENANT_ID: '${{ secrets.AZURE_TENANT_ID }}'
+  deploy:
+    runs-on: ubuntu-latest
+    needs: terraform
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v1
+        with:
+          version: 1.26.0
+      - name: Configure kubectl
+        run: >
+          az aks get-credentials --resource-group samuel-rg --name
+          munachimso
+        env:
+          AZURE_CREDENTIALS: '${{ secrets.AZURE_CREDENTIALS }}'
+      - name: Apply Kubernetes Manifests
         run: |
-          az aks get-credentials --resource-group rg-dear-jawfish --name cluster-exact-osprey --admin --overwrite-existing
-
-      - name: Deploy to AKS
+          kubectl apply -f my-app/templates/
+      - name: Verify Deployment
         run: |
-          cd sock-shop-app/k8s
-          kubectl apply -f my-sock-shop-complete-demo.yaml --validate=false
+          kubectl rollout status tony-capstone-project/my-app
+      - name: Apply Prometheus and Grafana
+        run: >
+          helm repo add prometheus-community
+          https://prometheus-community.github.io/helm-charts
 
-      - name: Install Helm
-        run: |
-          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-
-      - name: Add Helm repositories
-        run: |
-          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-          helm repo add grafana https://grafana.github.io/helm-charts
-          helm repo update
-
-      - name: Install Prometheus
-        run: |
-          # kubectl create namespace monitoring || true
-          helm list --namespace monitoring | grep -q '^prometheus\s' || helm install prometheus prometheus-community/prometheus --namespace monitoring
-
-      - name: Install Grafana
-        run: |
-          helm list --namespace monitoring | grep -q '^grafana\s' || helm install grafana grafana/grafana --namespace monitoring
-
-
-      # - name: Install NGINX Ingress Controller
-      #   run: |
-      #     helm list --namespace ingress-nginx | grep -q '^ingress-nginx\s' || helm install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx
-
-      # - name: Add Cert Manager Helm repository
-      #   run: |
-      #     helm repo add jetstack https://charts.jetstack.io || true
-      #     helm repo update
-
-      # - name: Install Cert Manager
-      #   run: |
-
-      - name: Add NGINX Ingress Controller Helm repository
-        run: |
-          helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx || true
-          helm repo update
-
-      - name: Apply Ingress and Issuer
-        run: |
-          cd sock-shop-app/k8s
-          kubectl apply -f my-ingress.yaml
-          kubectl apply -f issuer.yaml
-          kubectl apply -f certificate.yaml
-      
-      - name: Apply Monitoring Configurations
-        run: |
-          cd sock-shop-app/monitoring
-          kubectl apply $(ls *-prometheus-*.yaml | awk ' { print " -f " $1 } ')
-          kubectl apply $(ls *-grafana-*.yaml | awk ' { print " -f " $1 }'  | grep -v grafana-import)
-      
-      - name: Apply Alerting Configurations
-        run: |
-          cd sock-shop-app/alerting
-          kubectl apply $(ls *.yaml | awk '{print " -f " $1}')
-      
-      - name: Apply Logging Configurations
-        run: |
-          cd sock-shop-app/logging
-          kubectl apply $(ls *.yaml | awk '{print " -f " $1}')
+          helm install prome prometheus-community/kube-prometheus-stack -n
+          sock-shop
