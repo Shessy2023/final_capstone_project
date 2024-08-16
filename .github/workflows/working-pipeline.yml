@@ -94,6 +94,11 @@ jobs:
         run: terraform plan -out=tfplan
         working-directory: ./.terraform
 
+      
+      - name: Terraform Apply
+        if: success()
+        run: terraform apply -input=false tfplan
+
 
       - name: Configure Kubectl
         run: |
@@ -121,3 +126,6 @@ jobs:
       - name: Install Alertmanager
         run: |
           helm install alertmanager prometheus-community/alertmanager
+
+  # configure Grafana to send notifications to slack
+
