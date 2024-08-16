@@ -9,7 +9,7 @@ on:
       - 'sock-shop-app/monitoring/**'
       - 'sock-shop-app/alerting/**'
       - 'sock-shop-app/logging/**'
-
+    
   workflow_dispatch:
     inputs:
       example_input:
@@ -23,6 +23,21 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      - name: Check if force-push
+        id: check_force_push
+        run: |
+          git fetch origin +refs/heads/main
+          if [ "$(git rev-list HEAD..origin/main)" ]; then
+            echo "Force push detected."
+            echo "::set-output name=force_push::true"
+          else
+            echo "::set-output name=force_push::false"
+          fi
+          
+      - name: Conditional step for force-push
+        if: steps.check_force_push.outputs.force_push == 'true'
+        run: echo "This step runs only if there was a force push."
 
       - name: Install Azure CLI
         run: |
