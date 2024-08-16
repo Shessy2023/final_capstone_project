@@ -25,3 +25,7 @@ Thumbs.db
 ./.terraform/providers/registry.terraform.io/azure/azapi/1.14.0/darwin_amd64/terraform-provider-azapi_v1.14.0
 ./.git/lfs/objects/0d/6b/0d6bde7b245d942d0a8cec5106ae0cfbf238b38dff6b59088845f70613645791
 ./.git/lfs/objects/2e/85/2e85016cc1aa51949c5555feb48a33a57341aef51a2808f1d832fdfea1dfe8c6
+
+
+
+*azure-sp-credentials.json
