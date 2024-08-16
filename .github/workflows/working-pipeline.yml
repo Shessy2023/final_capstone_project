@@ -95,7 +95,8 @@ jobs:
         working-directory: ./.terraform
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        # run: terraform apply -auto-approve
+        run: terraform apply "tfplan"
       # - name: Terraform Apply
       #   if: success()
       #   run: terraform apply -input=false tfplan
