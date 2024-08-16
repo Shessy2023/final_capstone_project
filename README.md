@@ -14,6 +14,12 @@
 
 #### SockShop includes several microservices, such as the front-end, carts, catalouge, payments and shipping. Each service operates independently but share relevant data accross the deployment. Each microservice is packaged in a docker image and kubernetes is used to deploy and orchestrate the communication between the different services.
 
+## My Architecture Diagram
+
+### Here is a straightforward representation focusing on the key components og my deployment without too much details. I'll include the main elements: user, client/browser, Kubernetes cluster, microservices, Jenkins (or GitHub Actions which was used in this case), Ingress controller, and other essential steps. 
+![architectural design](/Snapshots/architechtural_design.png)
+
+
 ## I set up my project folder as shown in the folder 
 
 ![folder_tree](/Snapshots/folder_structure_tree.png)
