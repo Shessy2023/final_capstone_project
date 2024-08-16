@@ -279,3 +279,19 @@
 
 
 ## Pipeline (CI/CD) using Github-action
+
+### created my github repository, using github; then I did `git init` in my local repository, `git add`, `git commit`,and then `git push`.
+
+### I created a github action repository `.github/<my_desired_name> and withing it I wrote my work flow as shown below
+
+![pipeline](/Snapshots/pipeline-config.png)
+
+### after several testing andd debugging I was able to finally deployed a working app as shown below
+
+
+![pipeline](/Snapshots/pipepline-deployed.png)
+
+
+![pipeline](/Snapshots/pipeline-deployed2.png)
+
+
