@@ -107,3 +107,17 @@ jobs:
 
       - name: Deploy Ingress with Existing Cert-Manager Certificate
         run: kubectl apply -f ./my-ingress.yaml
+
+      - name: Install Prometheus
+        run: |
+        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+        helm install prometheus prometheus-community/kube-prometheus-stack
+
+      - name: Install Grafana
+        run: |
+        helm repo add grafana https://grafana.github.io/helm-charts
+        helm install grafana grafana/grafana
+
+      - name: Install Alertmanager
+        run: |
+        helm install alertmanager prometheus-community/alertmanager
