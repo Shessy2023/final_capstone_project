@@ -28,4 +28,5 @@ Thumbs.db
 
 
 
-*azure-sp-credentials.json
+azure-sp-credentials.json
+secrets.yml
