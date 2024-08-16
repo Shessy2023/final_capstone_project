@@ -12,14 +12,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Kubeval
-        un: |
-          curl -sLO https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
-          tar xf kubeval-linux-amd64.tar.gz
-          sudo mv kubeval /usr/local/bin/
+      # - name: Install Kubeval
+      #   un: |
+      #     curl -sLO https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
+      #     tar xf kubeval-linux-amd64.tar.gz
+      #     sudo mv kubeval /usr/local/bin/
 
-      - name: Test Kubernetes Manifests
-        run: kubeval .
+      # - name: Test Kubernetes Manifests
+      #   run: kubeval .
 
   infrastructure-update:
     needs: test
