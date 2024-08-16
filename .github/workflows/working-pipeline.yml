@@ -94,11 +94,12 @@ jobs:
         run: terraform plan -out=tfplan
         working-directory: ./.terraform
 
-      
       - name: Terraform Apply
-        if: success()
-        # run: terraform apply -input=false tfplan
-        run: terraform apply "tfplan"
+        run: terraform apply -input=false tfplan
+      # - name: Terraform Apply
+      #   if: success()
+      #   run: terraform apply -input=false tfplan
+        # run: terraform apply "tfplan"
 
 
       - name: Configure Kubectl
