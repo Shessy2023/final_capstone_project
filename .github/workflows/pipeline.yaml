@@ -5,17 +5,18 @@ on:
     branches:
       - main
     paths:
+      - 'terraform/**'
       - 'sock-shop-app/k8s/**'
       - 'sock-shop-app/monitoring/**'
       - 'sock-shop-app/alerting/**'
       - 'sock-shop-app/logging/**'
     
-  workflow_dispatch:
-    inputs:
-      example_input:
-        description: 'An example input'
-        required: false
-        default: 'default_value'
+  # workflow_dispatch:
+  #   inputs:
+  #     example_input:
+  #       description: 'An example input'
+  #       required: false
+  #       default: 'default_value'
 
 jobs:
   deploy:
