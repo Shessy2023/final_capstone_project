@@ -115,7 +115,18 @@ jobs:
 
       - name: Deploy Ingress with Existing Cert-Manager Certificate
         run: kubectl apply -f ./my-ingress.yaml
+      - name: Force Update Prometheus Release
+        run: |
+          helm upgrade --install prometheus prometheus-community/prometheus \
+            --namespace monitoring \
+            --set alertmanager.enabled=true \
+            --set server.persistentVolume.enabled=false \
+            --set pushgateway.enabled=false \
+            --set nodeExporter.enabled=false \
+            --force
 
+      
+      
       - name: Install Prometheus
         run: |
           helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
@@ -132,3 +143,8 @@ jobs:
 
   # configure Grafana to send notifications to slack
 
+  # Terraform Destroy to save us from billing
+
+      - name: Destroy Infrastructure
+        run: terraform destroy -auto-approve
+        working-directory: ./.terraform
