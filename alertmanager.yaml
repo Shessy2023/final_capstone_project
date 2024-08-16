@@ -1,6 +1,0 @@
-receivers:
-- name: 'slack-notifications'
-  slack_configs:
-  - api_url: https://hooks.slack.com/services/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
-    channel: '#alerts'
-    send_resolved: true

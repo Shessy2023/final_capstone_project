@@ -16,8 +16,6 @@ node_modules/
 *.so
 
 # Ignore system files
-.DS_Store
-Thumbs.db
 .terraform/providers/registry.terraform.io/hashicorp/azurerm/3.115.0/darwin_amd64/terraform-provider-azurerm_v3.115.0_x5
 .terraform/providers/registry.terraform.io/azure/azapi/1.14.0/darwin_amd64/terraform-provider-azapi_v1.14.0
 
