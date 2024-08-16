@@ -13,9 +13,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install Kubeval
-        run: |
-          curl -s https://api.github.com/repos/instrumenta/kubeval/releases/latest | grep browser_download_url | grep linux-amd64 | cut -d '"' -f 4 | wget -qi -
-          chmod +x kubeval-linux-amd64.tar.gz && sudo mv kubeval-linux-amd64.tar.gz /usr/local/bin/kubeval
+        un: |
+          curl -sLO https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
+          tar xf kubeval-linux-amd64.tar.gz
+          sudo mv kubeval /usr/local/bin/
 
       - name: Test Kubernetes Manifests
         run: kubeval .
