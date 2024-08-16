@@ -28,26 +28,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      # - name: Login to Azure
+      #   uses: azure/login@v1
+      #   with:
+      #     creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Install Terraform
-        run: |
-          sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
-          curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-          sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-          sudo apt-get update && sudo apt-get install terraform
+      # - name: Install Terraform
+      #   run: |
+      #     sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
+      #     curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+      #     sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+      #     sudo apt-get update && sudo apt-get install terraform
 
-      - name: Terraform Init and Plan
-        run: |
-          terraform init
-          terraform plan -out=tfplan
+      # - name: Terraform Init and Plan
+      #   run: |
+      #     terraform init
+      #     terraform plan -out=tfplan
 
-      - name: Terraform Apply
-        if: success()
-        run: terraform apply -input=false tfplan
+      # - name: Terraform Apply
+      #   if: success()
+      #   run: terraform apply -input=false tfplan
 
   deploy:
     needs: infrastructure-update
