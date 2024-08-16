@@ -292,6 +292,5 @@
 ![pipeline](/Snapshots/pipepline-deployed.png)
 
 
-![pipeline](/Snapshots/pipeline-deployed2.png)
-
+![pipeline](/Snapshots/pipeline_displayed_monitoring%20.png)
 
