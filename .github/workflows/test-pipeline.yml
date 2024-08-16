@@ -1,0 +1,83 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Kubeval
+        run: |
+          curl -s https://api.github.com/repos/instrumenta/kubeval/releases/latest | grep browser_download_url | grep linux-amd64 | cut -d '"' -f 4 | wget -qi -
+          chmod +x kubeval-linux-amd64.tar.gz && sudo mv kubeval-linux-amd64.tar.gz /usr/local/bin/kubeval
+
+      - name: Test Kubernetes Manifests
+        run: kubeval .
+
+  infrastructure-update:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Install Terraform
+        run: |
+          sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
+          curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+          sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+          sudo apt-get update && sudo apt-get install terraform
+
+      - name: Terraform Init and Plan
+        run: |
+          terraform init
+          terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        if: success()
+        run: terraform apply -input=false tfplan
+
+  deploy:
+    needs: infrastructure-update
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Install Azure CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+      - name: Install Helm
+        run: |
+          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+      - name: Install Kubectl
+        run: |
+          az aks install-cli
+
+      - name: Configure Kubectl
+        run: |
+          az aks get-credentials --resource-group rg-dear-jawfish --name cluster-exact-osprey --admin --overwrite-existing
+
+      - name: Install Cert-Manager
+        run: |
+          helm repo add jetstack https://charts.jetstack.io
+          helm repo update
+          helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace
