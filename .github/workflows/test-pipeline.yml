@@ -33,21 +33,7 @@ jobs:
       #   with:
       #     creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # - name: Install Terraform
-      #   run: |
-      #     sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
-      #     curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-      #     sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-      #     sudo apt-get update && sudo apt-get install terraform
-
-      # - name: Terraform Init and Plan
-      #   run: |
-      #     terraform init
-      #     terraform plan -out=tfplan
-
-      # - name: Terraform Apply
-      #   if: success()
-      #   run: terraform apply -input=false tfplan
+      
 
   deploy:
     needs: infrastructure-update
@@ -77,13 +63,34 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Install Terraform
+        run: |
+          sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
+          curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+          sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+          sudo apt-get update && sudo apt-get install terraform
+
+      - name: Terraform Init and Plan
+        run: |
+          terraform init
+          terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        if: success()
+        run: terraform apply -input=false tfplan
 
       - name: Configure Kubectl
         run: |
           az aks get-credentials --resource-group rg-dear-jawfish --name cluster-exact-osprey --admin --overwrite-existing
 
-      - name: Install Cert-Manager
-        run: |
-          helm repo add jetstack https://charts.jetstack.io
-          helm repo update
-          helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace
+      # - name: Install Cert-Manager
+      #   run: |
+      #     helm repo add jetstack https://charts.jetstack.io
+      #     helm repo update
+      #     helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace
+
+    
+
+
+      - name: Deploy Ingress with Existing Cert-Manager Certificate
+        run: kubectl apply -f /Users/shessy/Desktop/Capstone_project_azure2/my-shock-shop-app/K8s/my-ingress.yaml
