@@ -106,4 +106,4 @@ jobs:
       #     helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace
 
       - name: Deploy Ingress with Existing Cert-Manager Certificate
-        run: kubectl apply -f /Users/shessy/Desktop/Capstone_project_azure2/my-shock-shop-app/K8s/my-ingress.yaml
+        run: kubectl apply -f ./my-sock-shop-app/K8s/my-ingress.yaml
