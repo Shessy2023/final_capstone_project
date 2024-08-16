@@ -81,18 +81,18 @@ jobs:
 
       - name: Check for Terraform Files
         run: |
-          if [ -z "$(ls -A ./terraform/*.tf 2>/dev/null)" ]; then
+          if [ -z "$(ls -A ./.terraform/*.tf 2>/dev/null)" ]; then
             echo "No Terraform files found, skipping."
             exit 0
           fi
 
       - name: Initialize Terraform
         run: terraform init
-        working-directory: ./terraform
+        working-directory: ./.terraform
 
       - name: Plan Terraform
         run: terraform plan -out=tfplan
-        working-directory: ./terraform
+        working-directory: ./.terraform
 
 
       - name: Configure Kubectl
