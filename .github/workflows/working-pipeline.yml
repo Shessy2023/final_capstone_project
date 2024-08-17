@@ -118,46 +118,42 @@ jobs:
 
 
 
+      - name: Uninstall Prometheus if exists
+        run: helm uninstall prometheus --namespace monitoring || true
+
+      - name: Uninstall Grafana if exists
+        run: helm uninstall grafana --namespace monitoring || true
+
+      - name: Uninstall Alertmanager if exists
+        run: helm uninstall alertmanager --namespace monitoring || true
+
       - name: Add Prometheus Helm Repo
         run: helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 
-      - name: Add Grafana Helm Repo
-        run: helm repo add grafana https://grafana.github.io/helm-charts
-
       - name: Update Prometheus Release
         run: |
-          helm upgrade prometheus prometheus-community/prometheus \
-            --namespace monitoring \--set alertmanager.enabled=true \
+          helm upgrade --install prometheus prometheus-community/prometheus \
+            --namespace monitoring \
+            --set alertmanager.enabled=true \
             --set server.persistentVolume.enabled=false \
             --set pushgateway.enabled=false \
             --set nodeExporter.enabled=false
 
+      - name: Add Grafana Helm Repo
+        run: helm repo add grafana https://grafana.github.io/helm-charts
+
       - name: Update Grafana Release
         run: |
-          helm upgrade grafana grafana/grafana \
+          helm upgrade --install grafana grafana/grafana \
             --namespace monitoring \
             --set adminPassword=your_password_here \
             --set service.type=LoadBalancer
 
       - name: Update Alertmanager Release
         run: |
-          helm upgrade alertmanager prometheus-community/alertmanager \
+          helm upgrade --install alertmanager prometheus-community/alertmanager \
             --namespace monitoring
 
-      
-      # - name: Install Prometheus
-      #   run: |
-      #     helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-      #     helm install prometheus prometheus-community/kube-prometheus-stack
-
-      # - name: Install Grafana
-      #   run: |
-      #     helm repo add grafana https://grafana.github.io/helm-charts
-      #     helm install grafana grafana/grafana
-
-      # - name: Install Alertmanager
-      #   run: |
-      #     helm install alertmanager prometheus-community/alertmanager
 
   # configure Grafana to send notifications to slack
 
