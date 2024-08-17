@@ -11,4 +11,7 @@ spec:
   commonName: www.oluwayemioluwasesan.me
   dnsNames:
   - www.oluwayemioluwasesan.me
+  - oluwayemioluwasesan.me
+  - prometheus.oluwayemioluwasesan.me
+  - grafana.oluwayemioluwasesan.me
  
