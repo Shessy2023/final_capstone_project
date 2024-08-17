@@ -10,10 +10,6 @@ node_modules/
 # Ignore log files
 *.log
 
-# Ignore compiled files
-*.class
-*.o
-*.so
 
 # Ignore system files
 .terraform/providers/registry.terraform.io/hashicorp/azurerm/3.115.0/darwin_amd64/terraform-provider-azurerm_v3.115.0_x5
