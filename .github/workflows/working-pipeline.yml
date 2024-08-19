@@ -159,6 +159,6 @@ jobs:
 
   # Terraform Destroy to save us from billing
 
-      - name: Destroy Infrastructure
-        run: terraform destroy -auto-approve
-        working-directory: ./.terraform
+      # - name: Destroy Infrastructure
+      #   run: terraform destroy -auto-approve
+      #   working-directory: ./.terraform
